@@ -1,0 +1,57 @@
+﻿@page "/orders"
+@using Model
+@using Data
+@inject IOrdersService OrdersService
+@inject NavigationManager NavMgr
+<h3>Orders</h3>
+
+@if (orders == null)
+{
+    <p>
+        <em>Loading orders</em>
+    </p>
+}
+else if (!orders.Any())
+{
+    <p>
+        <em>No orders to show.</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Description</th>
+            <th>Customer ID</th>
+            <th>Menu ID</th>
+            <th>Status</th>
+            <th>Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in orders)
+        {
+            <tr>
+                <td>@item.OrderId</td>
+                <td>@item.Description</td>
+                <td>@item.Customer.CustomerId</td>
+                <td>@item.Menu.MenuId</td>
+                <td>@item.Status</td>
+                <td>@item.Price</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IList<Order> orders;
+
+    protected override async Task OnInitializedAsync()
+    {
+        orders = await OrdersService.GetOrdersAsync();
+    }
+
+}

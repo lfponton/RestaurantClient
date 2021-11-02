@@ -1,0 +1,54 @@
+﻿@page "/createorder"
+<h3>CreateOrder</h3>
+@using Model
+@using Data
+@inject IOrdersService OrdersService
+@inject NavigationManager NavMgr
+
+
+<EditForm Model="@newOrder" OnValidSubmit="@CreateOrderAsync">
+    <div class="form-group">
+        Description:<br/>
+        <InputTextArea rows="4" @bind-Value="newOrder.Description"/>
+    </div>
+    <div class="form-group">
+        Price:<br/>
+        <InputNumber @bind-Value="newOrder.Price"/>
+    </div>
+    <p class="actions">
+        <button class="btn btn-outline-dark" type="submit">Create</button>
+    </p>
+</EditForm>
+
+@code {
+    private Customer customer = new Customer()
+    {
+        CustomerId = 2,
+        FirstName = "Tony",
+        LastName = "Genil",
+        Address = "Address2"
+    };
+
+    private Menu menu = new Menu()
+    {
+        MenuId = 1,
+        Price = 200
+    };
+   
+    private Order newOrder;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        newOrder = new Order();
+    }
+
+    private async Task CreateOrderAsync()
+    {
+        newOrder.Customer = customer;
+        newOrder.Menu = menu;
+        newOrder.Status = "InProgress";
+        await OrdersService.CreateOrderAsync(newOrder);
+        NavMgr.NavigateTo("/orders");
+    }
+
+}
